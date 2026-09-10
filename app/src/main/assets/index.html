@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Taskora</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+ background:#f4f6fb;
+ color:#111827;
+}
+.app{max-width:760px;margin:auto;padding:20px 16px 100px}
+.header{padding:20px 4px}
+.logo{font-size:30px;font-weight:900}
+.subtitle{color:#667085;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.card{
+ background:white;
+ border:1px solid #e7eaf0;
+ border-radius:20px;
+ padding:16px;
+ box-shadow:0 8px 25px rgba(16,24,40,.06);
+}
+.stat b{font-size:25px}
+.stat span{display:block;color:#667085;font-size:12px;margin-top:4px}
+.toolbar{display:flex;gap:9px;margin-bottom:15px}
+input{
+ flex:1;
+ padding:14px;
+ border:1px solid #dfe3ea;
+ border-radius:14px;
+ font-size:15px;
+ outline:none;
+}
+button{
+ border:0;
+ border-radius:14px;
+ padding:13px 17px;
+ background:#6757e8;
+ color:white;
+ font-weight:800;
+}
+.tasks{display:grid;gap:10px}
+.task{display:flex;align-items:center;gap:12px}
+.check{
+ width:23px;height:23px;
+ border:2px solid #c8ced8;
+ border-radius:7px;
+ flex:none;
+}
+.done .check{background:#16b8a6;border-color:#16b8a6}
+.done .name{text-decoration:line-through;color:#98a2b3}
+.name{font-weight:750}
+.meta{font-size:12px;color:#667085;margin-top:4px}
+.bottom{
+ position:fixed;
+ bottom:14px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#111827;
+ padding:8px;
+ border-radius:20px;
+ display:flex;
+ gap:4px;
+}
+.bottom button{background:transparent;padding:9px 13px}
+.modal{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.45);
+ display:none;
+ align-items:flex-end;
+}
+.sheet{
+ background:white;
+ width:100%;
+ max-width:760px;
+ margin:auto;
+ border-radius:25px 25px 0 0;
+ padding:22px;
+}
+.sheet input{width:100%;margin:10px 0}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+ <div class="header">
+   <div class="logo">Taskora</div>
+   <div class="subtitle" id="subtitle">
+     نظّم يومك، أنجز أكثر.
+   </div>
+ </div>
+
+ <div class="stats">
+   <div class="card stat">
+     <b id="total">0</b>
+     <span id="totalText">الإجمالي</span>
+   </div>
+
+   <div class="card stat">
+     <b id="completed">0</b>
+     <span id="completedText">المكتملة</span>
+   </div>
+
+   <div class="card stat">
+     <b id="remaining">0</b>
+     <span id="remainingText">المتبقية</span>
+   </div>
+ </div>
+
+ <div class="toolbar">
+   <input id="search" placeholder="ابحث عن مهمة...">
+   <button onclick="openAdd()">+ إضافة</button>
+ </div>
+
+ <div class="tasks" id="tasks"></div>
+
+</div>
+
+<div class="bottom">
+ <button onclick="setLanguage('ar')">العربية</button>
+ <button onclick="setLanguage('en')">EN</button>
+</div>
+
+<div class="modal" id="modal">
+ <div class="sheet">
+   <h2 id="modalTitle">مهمة جديدة</h2>
+   <input id="taskInput" placeholder="اكتب المهمة هنا">
+   <button onclick="addTask()" id="saveButton">حفظ المهمة</button>
+ </div>
+</div>
+
+<script>
+
+let tasks =
+ JSON.parse(localStorage.getItem("taskora_tasks") || "[]");
+
+let language =
+ localStorage.getItem("taskora_language") || "ar";
+
+const text = {
+
+ ar:{
+  subtitle:"نظّم يومك، أنجز أكثر.",
+  total:"الإجمالي",
+  completed:"المكتملة",
+  remaining:"المتبقية",
+  search:"ابحث عن مهمة...",
+  add:"+ إضافة",
+  newTask:"مهمة جديدة",
+  placeholder:"اكتب المهمة هنا",
+  save:"حفظ المهمة",
+  empty:"لا توجد مهام حتى الآن.",
+  completedStatus:"مكتملة",
+  activeStatus:"قيد التنفيذ"
+ },
+
+ en:{
+  subtitle:"Organize your day. Accomplish more.",
+  total:"Total",
+  completed:"Completed",
+  remaining:"Remaining",
+  search:"Search tasks...",
+  add:"+ Add",
+  newTask:"New task",
+  placeholder:"Write your task",
+  save:"Save task",
+  empty:"No tasks yet.",
+  completedStatus:"Completed",
+  activeStatus:"In progress"
+ }
+
+};
+
+function save(){
+ localStorage.setItem("taskora_tasks",JSON.stringify(tasks));
+ render();
+}
+
+function render(){
+
+ const query =
+ document.getElementById("search").value.toLowerCase();
+
+ const filtered =
+ tasks.filter(t =>
+ t.name.toLowerCase().includes(query)
+ );
+
+ document.getElementById("total").textContent =
+ tasks.length;
+
+ document.getElementById("completed").textContent =
+ tasks.filter(t=>t.done).length;
+
+ document.getElementById("remaining").textContent =
+ tasks.filter(t=>!t.done).length;
+
+ const box=document.getElementById("tasks");
+
+ if(filtered.length===0){
+  box.innerHTML =
+  `<div class="card" style="text-align:center;color:#667085">
+  ${text[language].empty}
+  </div>`;
+  return;
+ }
+
+ box.innerHTML=filtered.map(task=>{
+
+  const index=tasks.indexOf(task);
+
+  return `
+  <div class="card task ${task.done?'done':''}"
+       onclick="toggleTask(${index})">
+
+   <div class="check"></div>
+
+   <div>
+    <div class="name">${escapeHtml(task.name)}</div>
+
+    <div class="meta">
+     ${task.done
+       ? text[language].completedStatus
+       : text[language].activeStatus}
+    </div>
+   </div>
+
+  </div>
+  `;
+
+ }).join("");
+}
+
+function escapeHtml(value){
+
+ return value.replace(/[&<>"]/g,function(c){
+
+  return {
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;"
+  }[c];
+
+ });
+
+}
+
+function toggleTask(index){
+
+ tasks[index].done=!tasks[index].done;
+
+ save();
+}
+
+function openAdd(){
+
+ document.getElementById("modal").style.display="flex";
+
+ document.getElementById("taskInput").focus();
+}
+
+function addTask(){
+
+ const input=document.getElementById("taskInput");
+
+ const value=input.value.trim();
+
+ if(!value)return;
+
+ tasks.unshift({
+  name:value,
+  done:false
+ });
+
+ input.value="";
+
+ document.getElementById("modal").style.display="none";
+
+ save();
+}
+
+function setLanguage(lang){
+
+ language=lang;
+
+ localStorage.setItem("taskora_language",lang);
+
+ document.documentElement.lang=lang;
+
+ document.documentElement.dir=
+ lang==="ar"?"rtl":"ltr";
+
+ document.getElementById("subtitle").textContent=
+ text[lang].subtitle;
+
+ document.getElementById("totalText").textContent=
+ text[lang].total;
+
+ document.getElementById("completedText").textContent=
+ text[lang].completed;
+
+ document.getElementById("remainingText").textContent=
+ text[lang].remaining;
+
+ document.getElementById("search").placeholder=
+ text[lang].search;
+
+ document.querySelector(".toolbar button").textContent=
+ text[lang].add;
+
+ document.getElementById("modalTitle").textContent=
+ text[lang].newTask;
+
+ document.getElementById("taskInput").placeholder=
+ text[lang].placeholder;
+
+ document.getElementById("saveButton").textContent=
+ text[lang].save;
+
+ render();
+}
+
+document.getElementById("search").addEventListener(
+ "input",render
+);
+
+document.getElementById("modal").addEventListener(
+ "click",function(e){
+
+  if(e.target===this)
+   this.style.display="none";
+
+ }
+);
+
+setLanguage(language);
+
+</script>
+
+</body>
+</html>
