@@ -25,10 +25,28 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
-      - name: Build APK
+      - name: Create signing key
+        run: |
+          keytool -genkeypair \
+            -v \
+            -keystore taskora-release.jks \
+            -alias taskora \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass TaskoraStore2026 \
+            -keypass TaskoraKey2026 \
+            -dname "CN=Taskora, OU=Taskora, O=Taskora, L=Sanaa, ST=Sanaa, C=YE"
+
+      - name: Build signed APK
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/taskora-release.jks
+          KEYSTORE_PASSWORD: TaskoraStore2026
+          KEY_ALIAS: taskora
+          KEY_PASSWORD: TaskoraKey2026
         run: gradle :app:assembleRelease --no-daemon
 
-      - name: Show generated APK files
+      - name: Show generated APK
         run: find app/build/outputs/apk -type f -name "*.apk" -print
 
       - name: Upload APK
