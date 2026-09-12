@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#6757e8">
 <title>Taskora</title>
 
 <style>
@@ -10,20 +11,14 @@
 :root{
  --primary:#6757e8;
  --primary2:#8b5cf6;
- --bg:#f4f6fb;
+ --bg:#f5f7fb;
  --card:#fff;
  --text:#111827;
  --muted:#667085;
- --border:#e7eaf0;
+ --border:#e5e7eb;
  --danger:#ef4444;
  --success:#16a34a;
-}
-*{transition:background-color .2s,color .2s,border-color .2s}
-body{
- margin:0;
- font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
- background:var(--bg);
- color:var(--text);
+ --warning:#f59e0b;
 }
 body.dark{
  --bg:#0b1020;
@@ -32,35 +27,45 @@ body.dark{
  --muted:#9ca3af;
  --border:#293247;
 }
-.app{max-width:760px;margin:auto;padding:18px 16px 100px}
+*{transition:background-color .2s,color .2s,border-color .2s}
+body{
+ margin:0;
+ font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.app{
+ max-width:850px;
+ margin:auto;
+ padding:18px 16px 100px;
+}
 .header{
- padding:18px 4px 22px;
  display:flex;
  justify-content:space-between;
  align-items:center;
- gap:12px;
+ padding:10px 2px 22px;
 }
 .logo{
- font-size:32px;
- font-weight:900;
+ font-size:34px;
+ font-weight:950;
  background:linear-gradient(135deg,var(--primary),var(--primary2));
  -webkit-background-clip:text;
  color:transparent;
 }
-.subtitle{color:var(--muted);margin-top:5px}
+.subtitle{
+ color:var(--muted);
+ margin-top:5px;
+}
 .iconbtn{
- width:46px;height:46px;
+ width:46px;
+ height:46px;
  border:1px solid var(--border);
  background:var(--card);
  color:var(--text);
  border-radius:15px;
  font-size:20px;
-}
-.stats{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:10px;
- margin-bottom:18px;
 }
 .card{
  background:var(--card);
@@ -69,17 +74,47 @@ body.dark{
  padding:16px;
  box-shadow:0 8px 25px rgba(16,24,40,.06);
 }
-.stat b{font-size:25px}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ margin-bottom:18px;
+}
+.stat b{
+ display:block;
+ font-size:25px;
+}
 .stat span{
  display:block;
  color:var(--muted);
  font-size:12px;
  margin-top:4px;
 }
+.progress-card{
+ margin-bottom:18px;
+}
+.progress-top{
+ display:flex;
+ justify-content:space-between;
+ margin-bottom:9px;
+ font-weight:800;
+}
+.progress{
+ height:9px;
+ background:var(--border);
+ border-radius:20px;
+ overflow:hidden;
+}
+.progress-bar{
+ height:100%;
+ width:0%;
+ background:linear-gradient(90deg,var(--primary),var(--primary2));
+ border-radius:20px;
+}
 .toolbar{
  display:flex;
  gap:9px;
- margin-bottom:15px;
+ margin-bottom:10px;
 }
 input,select{
  width:100%;
@@ -91,25 +126,30 @@ input,select{
  background:var(--card);
  color:var(--text);
 }
-.toolbar input{flex:1}
-button{
+button.primary{
  border:0;
  border-radius:14px;
  padding:13px 17px;
- background:var(--primary);
- color:white;
- font-weight:800;
- cursor:pointer;
+ background:linear-gradient(135deg,var(--primary),var(--primary2));
+ color:#fff;
+ font-weight:850;
 }
-.tasks{display:grid;gap:10px}
+.toolbar button{
+ white-space:nowrap;
+}
+.tasks{
+ display:grid;
+ gap:10px;
+ margin-top:14px;
+}
 .task{
  display:flex;
  align-items:center;
  gap:12px;
- cursor:pointer;
 }
 .check{
- width:24px;height:24px;
+ width:25px;
+ height:25px;
  border:2px solid #c8ced8;
  border-radius:8px;
  flex:none;
@@ -118,15 +158,25 @@ button{
  background:var(--success);
  border-color:var(--success);
 }
+.done .check:after{
+ content:"✓";
+ color:#fff;
+ display:block;
+ text-align:center;
+ font-weight:900;
+}
 .done .name{
  text-decoration:line-through;
  color:var(--muted);
 }
-.name{font-weight:750}
+.name{
+ font-weight:800;
+ word-break:break-word;
+}
 .meta{
  font-size:12px;
  color:var(--muted);
- margin-top:4px;
+ margin-top:5px;
 }
 .task-actions{
  margin-right:auto;
@@ -136,10 +186,31 @@ button{
 .small{
  padding:8px 10px;
  border-radius:10px;
+ border:0;
+ color:#fff;
  font-size:12px;
 }
-.delete{background:var(--danger)}
 .edit{background:#475569}
+.delete{background:var(--danger)}
+.priority{
+ display:inline-block;
+ margin-top:6px;
+ padding:3px 8px;
+ border-radius:20px;
+ font-size:11px;
+ font-weight:800;
+}
+.p-normal{background:#e5e7eb;color:#374151}
+.p-high{background:#fef3c7;color:#92400e}
+.p-urgent{background:#fee2e2;color:#991b1b}
+body.dark .p-normal{background:#374151;color:#e5e7eb}
+body.dark .p-high{background:#78350f;color:#fde68a}
+body.dark .p-urgent{background:#7f1d1d;color:#fecaca}
+.empty{
+ text-align:center;
+ color:var(--muted);
+ padding:40px 20px;
+}
 .bottom{
  position:fixed;
  bottom:12px;
@@ -155,12 +226,14 @@ button{
 }
 .bottom button{
  background:transparent;
+ border:0;
+ color:#fff;
  padding:9px 12px;
 }
 .modal{
  position:fixed;
  inset:0;
- background:rgba(0,0,0,.5);
+ background:rgba(0,0,0,.55);
  display:none;
  align-items:flex-end;
  z-index:50;
@@ -169,19 +242,40 @@ button{
  background:var(--card);
  color:var(--text);
  width:100%;
- max-width:760px;
+ max-width:850px;
  margin:auto;
  border-radius:25px 25px 0 0;
  padding:22px;
+ max-height:90vh;
+ overflow:auto;
 }
-.sheet input,.sheet select{margin:8px 0}
+.sheet h2{
+ margin-top:0;
+}
+.sheet input,.sheet select{
+ margin:7px 0;
+}
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+}
 .sheet-actions{
  display:flex;
  gap:8px;
- margin-top:10px;
+ margin-top:12px;
 }
-.sheet-actions button{flex:1}
-.cancel{background:#64748b}
+.sheet-actions button{
+ flex:1;
+}
+.cancel{
+ background:#64748b;
+ color:#fff;
+ border:0;
+ border-radius:14px;
+ padding:13px;
+ font-weight:800;
+}
 .settings{
  position:fixed;
  inset:0;
@@ -191,7 +285,7 @@ button{
  overflow:auto;
 }
 .settings-inner{
- max-width:760px;
+ max-width:850px;
  margin:auto;
  padding:20px 16px 100px;
 }
@@ -200,25 +294,40 @@ button{
  justify-content:space-between;
  align-items:center;
  gap:15px;
- padding:16px 0;
+ padding:17px 0;
  border-bottom:1px solid var(--border);
 }
-.setting-row span{color:var(--muted);font-size:13px}
+.setting-row span{
+ color:var(--muted);
+ font-size:13px;
+}
 .close{
  background:#475569;
+ color:#fff;
+ border:0;
+ padding:12px 18px;
+ border-radius:14px;
  margin-bottom:15px;
 }
-.empty{
- text-align:center;
- color:var(--muted);
- padding:30px;
+.danger-box{
+ margin-top:15px;
 }
-@media(max-width:420px){
- .logo{font-size:28px}
- .stats{gap:7px}
- .card{padding:13px}
- .toolbar{flex-direction:column}
- .toolbar button{width:100%}
+@media(max-width:500px){
+ .stats{
+  grid-template-columns:repeat(2,1fr);
+ }
+ .row{
+  grid-template-columns:1fr;
+ }
+ .toolbar{
+  flex-direction:column;
+ }
+ .toolbar button{
+  width:100%;
+ }
+ .logo{
+  font-size:29px;
+ }
 }
 </style>
 </head>
@@ -232,27 +341,47 @@ button{
   <div class="logo">Taskora</div>
   <div class="subtitle" id="subtitle">نظّم يومك، أنجز أكثر.</div>
  </div>
+
  <button class="iconbtn" onclick="openSettings()">⚙️</button>
 </header>
 
 <section class="stats">
+
  <div class="card stat">
   <b id="total">0</b>
   <span id="totalText">الإجمالي</span>
  </div>
+
  <div class="card stat">
   <b id="completed">0</b>
   <span id="completedText">المكتملة</span>
  </div>
+
  <div class="card stat">
   <b id="remaining">0</b>
   <span id="remainingText">المتبقية</span>
  </div>
+
+ <div class="card stat">
+  <b id="urgentCount">0</b>
+  <span id="urgentText">العاجلة</span>
+ </div>
+
 </section>
+
+<div class="card progress-card">
+ <div class="progress-top">
+  <span id="progressText">إنجاز اليوم</span>
+  <span id="progressPercent">0%</span>
+ </div>
+ <div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+ </div>
+</div>
 
 <div class="toolbar">
  <input id="search" placeholder="ابحث عن مهمة...">
- <button onclick="openAdd()" id="addButton">+ إضافة</button>
+ <button class="primary" onclick="openAdd()" id="addButton">+ إضافة مهمة</button>
 </div>
 
 <div class="toolbar">
@@ -260,6 +389,15 @@ button{
   <option value="all">كل المهام</option>
   <option value="active">قيد التنفيذ</option>
   <option value="done">المكتملة</option>
+  <option value="urgent">العاجلة</option>
+ </select>
+
+ <select id="categoryFilter" onchange="render()">
+  <option value="all">كل التصنيفات</option>
+  <option value="personal">شخصية</option>
+  <option value="work">عمل</option>
+  <option value="study">دراسة</option>
+  <option value="other">أخرى</option>
  </select>
 </div>
 
@@ -273,25 +411,51 @@ button{
 </div>
 
 <div class="modal" id="modal">
+
  <div class="sheet">
+
   <h2 id="modalTitle">مهمة جديدة</h2>
 
   <input id="taskInput" placeholder="اكتب المهمة هنا">
 
-  <select id="priority">
-   <option value="normal">عادية</option>
-   <option value="high">مهمة</option>
-   <option value="urgent">عاجلة</option>
-  </select>
+  <div class="row">
+   <input id="taskDate" type="date">
+   <input id="taskTime" type="time">
+  </div>
+
+  <div class="row">
+
+   <select id="priority">
+    <option value="normal">عادية</option>
+    <option value="high">مهمة</option>
+    <option value="urgent">عاجلة</option>
+   </select>
+
+   <select id="category">
+    <option value="personal">شخصية</option>
+    <option value="work">عمل</option>
+    <option value="study">دراسة</option>
+    <option value="other">أخرى</option>
+   </select>
+
+  </div>
 
   <div class="sheet-actions">
-   <button onclick="saveTask()" id="saveButton">حفظ المهمة</button>
-   <button onclick="closeModal()" class="cancel">إلغاء</button>
+   <button class="primary" onclick="saveTask()" id="saveButton">
+    حفظ المهمة
+   </button>
+
+   <button onclick="closeModal()" class="cancel" id="cancelButton">
+    إلغاء
+   </button>
   </div>
+
  </div>
+
 </div>
 
 <div class="settings" id="settings">
+
  <div class="settings-inner">
 
   <button class="close" onclick="closeSettings()" id="closeSettings">
@@ -299,6 +463,7 @@ button{
   </button>
 
   <div class="card">
+
    <h2 id="settingsTitle">الإعدادات</h2>
 
    <div class="setting-row">
@@ -306,28 +471,51 @@ button{
      <b id="darkText">الوضع الليلي</b><br>
      <span id="darkDesc">تغيير مظهر التطبيق</span>
     </div>
-    <button onclick="toggleDark()" id="darkButton">تشغيل</button>
-   </div>
-
-   <div class="setting-row">
-    <div>
-     <b id="clearText">حذف جميع المهام</b><br>
-     <span id="clearDesc">حذف البيانات المحفوظة</span>
-    </div>
-    <button onclick="clearTasks()" class="delete" id="clearButton">
-     حذف
+    <button class="primary" onclick="toggleDark()" id="darkButton">
+     تشغيل
     </button>
    </div>
 
    <div class="setting-row">
     <div>
+     <b id="languageText">لغة التطبيق</b><br>
+     <span id="languageDesc">العربية أو الإنجليزية</span>
+    </div>
+   </div>
+
+   <div class="setting-row">
+    <div>
+     <b id="dataText">البيانات</b><br>
+     <span id="dataDesc">يتم حفظ المهام على الجهاز</span>
+    </div>
+   </div>
+
+   <div class="setting-row">
+    <div>
      <b>Taskora</b><br>
-     <span>Version 1.0</span>
+     <span>Version 2.0</span>
     </div>
    </div>
 
   </div>
+
+  <div class="card danger-box">
+
+   <div class="setting-row" style="border:0">
+    <div>
+     <b id="clearText">حذف جميع المهام</b><br>
+     <span id="clearDesc">حذف البيانات المحفوظة</span>
+    </div>
+
+    <button class="small delete" onclick="clearTasks()" id="clearButton">
+     حذف
+    </button>
+   </div>
+
+  </div>
+
  </div>
+
 </div>
 
 <script>
@@ -341,36 +529,49 @@ let language =
 let dark =
  localStorage.getItem("taskora_dark") === "1";
 
-let editingIndex = -1;
+let editingIndex=-1;
 
-const text = {
+const text={
 
  ar:{
   subtitle:"نظّم يومك، أنجز أكثر.",
   total:"الإجمالي",
   completed:"المكتملة",
   remaining:"المتبقية",
+  urgent:"العاجلة",
+  progress:"إنجاز اليوم",
   search:"ابحث عن مهمة...",
-  add:"+ إضافة",
+  add:"+ إضافة مهمة",
   newTask:"مهمة جديدة",
   editTask:"تعديل المهمة",
   placeholder:"اكتب المهمة هنا",
   save:"حفظ المهمة",
   update:"تحديث المهمة",
+  cancel:"إلغاء",
   empty:"لا توجد مهام حتى الآن.",
   completedStatus:"مكتملة",
   activeStatus:"قيد التنفيذ",
   all:"كل المهام",
   active:"قيد التنفيذ",
   done:"المكتملة",
+  urgentFilter:"العاجلة",
+  categories:"كل التصنيفات",
+  personal:"شخصية",
+  work:"عمل",
+  study:"دراسة",
+  other:"أخرى",
   normal:"عادية",
   high:"مهمة",
-  urgent:"عاجلة",
+  urgentPriority:"عاجلة",
   settings:"الإعدادات",
   dark:"الوضع الليلي",
   darkDesc:"تغيير مظهر التطبيق",
   on:"تشغيل",
   off:"إيقاف",
+  language:"لغة التطبيق",
+  languageDesc:"العربية أو الإنجليزية",
+  data:"البيانات",
+  dataDesc:"يتم حفظ المهام على الجهاز",
   clear:"حذف جميع المهام",
   clearDesc:"حذف البيانات المحفوظة",
   delete:"حذف",
@@ -384,27 +585,40 @@ const text = {
   total:"Total",
   completed:"Completed",
   remaining:"Remaining",
+  urgent:"Urgent",
+  progress:"Today's progress",
   search:"Search tasks...",
-  add:"+ Add",
+  add:"+ Add task",
   newTask:"New task",
   editTask:"Edit task",
   placeholder:"Write your task",
   save:"Save task",
   update:"Update task",
+  cancel:"Cancel",
   empty:"No tasks yet.",
   completedStatus:"Completed",
   activeStatus:"In progress",
   all:"All tasks",
   active:"In progress",
   done:"Completed",
+  urgentFilter:"Urgent",
+  categories:"All categories",
+  personal:"Personal",
+  work:"Work",
+  study:"Study",
+  other:"Other",
   normal:"Normal",
   high:"Important",
-  urgent:"Urgent",
+  urgentPriority:"Urgent",
   settings:"Settings",
   dark:"Dark mode",
   darkDesc:"Change application appearance",
   on:"ON",
   off:"OFF",
+  language:"Application language",
+  languageDesc:"Arabic or English",
+  data:"Data",
+  dataDesc:"Tasks are saved on this device",
   clear:"Delete all tasks",
   clearDesc:"Delete saved data",
   delete:"Delete",
@@ -416,100 +630,197 @@ const text = {
 };
 
 function save(){
- localStorage.setItem("taskora_tasks",JSON.stringify(tasks));
+
+ localStorage.setItem(
+  "taskora_tasks",
+  JSON.stringify(tasks)
+ );
+
  render();
 }
 
 function render(){
 
- const query =
- document.getElementById("search").value.toLowerCase();
+ const query=
+ document.getElementById("search").value
+ .toLowerCase()
+ .trim();
 
- const filter =
+ const filter=
  document.getElementById("filter").value;
+
+ const category=
+ document.getElementById("categoryFilter").value;
 
  let filtered=tasks.filter(t=>{
 
-  const matchSearch =
+  const matchSearch=
    t.name.toLowerCase().includes(query);
 
-  const matchFilter =
+  const matchFilter=
    filter==="all" ||
    (filter==="done" && t.done) ||
-   (filter==="active" && !t.done);
+   (filter==="active" && !t.done) ||
+   (filter==="urgent" && t.priority==="urgent");
 
-  return matchSearch && matchFilter;
+  const matchCategory=
+   category==="all" ||
+   t.category===category;
+
+  return matchSearch &&
+         matchFilter &&
+         matchCategory;
+
  });
 
- document.getElementById("total").textContent=tasks.length;
-
- document.getElementById("completed").textContent=
+ const completed=
  tasks.filter(t=>t.done).length;
 
- document.getElementById("remaining").textContent=
+ const remaining=
  tasks.filter(t=>!t.done).length;
 
- const box=document.getElementById("tasks");
+ const urgent=
+ tasks.filter(t=>!t.done && t.priority==="urgent").length;
+
+ document.getElementById("total").textContent=
+  tasks.length;
+
+ document.getElementById("completed").textContent=
+  completed;
+
+ document.getElementById("remaining").textContent=
+  remaining;
+
+ document.getElementById("urgentCount").textContent=
+  urgent;
+
+ const percent=
+ tasks.length
+ ? Math.round((completed/tasks.length)*100)
+ : 0;
+
+ document.getElementById("progressPercent").textContent=
+  percent+"%";
+
+ document.getElementById("progressBar").style.width=
+  percent+"%";
+
+ const box=
+ document.getElementById("tasks");
 
  if(filtered.length===0){
+
   box.innerHTML=
-   `<div class="card empty">${text[language].empty}</div>`;
+   `<div class="card empty">
+     ${text[language].empty}
+   </div>`;
+
   return;
  }
 
- box.innerHTML=filtered.map(task=>{
+ box.innerHTML=
+ filtered.map(task=>{
 
   const index=tasks.indexOf(task);
 
-  let priorityText=text[language][task.priority||"normal"];
+  const priority=
+   task.priority || "normal";
+
+  const categoryName=
+   text[language][task.category || "other"];
+
+  const priorityName=
+   priority==="urgent"
+    ? text[language].urgentPriority
+    : text[language][priority];
+
+  let dateText="";
+
+  if(task.date){
+   dateText+=
+    "📅 "+task.date;
+  }
+
+  if(task.time){
+   dateText+=
+    (dateText?" · ":"")+"⏰ "+task.time;
+  }
 
   return `
-  <div class="card task ${task.done?'done':''}">
+  <div class="card task ${task.done?"done":""}">
 
-   <div class="check"
-        onclick="toggleTask(${index})"></div>
+   <div
+    class="check"
+    onclick="toggleTask(${index})">
+   </div>
 
-   <div style="flex:1" onclick="toggleTask(${index})">
-    <div class="name">${escapeHtml(task.name)}</div>
+   <div
+    style="flex:1"
+    onclick="toggleTask(${index})">
+
+    <div class="name">
+     ${escapeHtml(task.name)}
+    </div>
+
     <div class="meta">
      ${task.done
       ? text[language].completedStatus
       : text[language].activeStatus}
-     · ${priorityText}
+     · ${categoryName}
+     ${dateText ? " · "+dateText : ""}
     </div>
+
+    <span class="priority p-${priority}">
+     ${priorityName}
+    </span>
+
    </div>
 
    <div class="task-actions">
-    <button class="small edit"
-            onclick="openEdit(${index})">✏️</button>
-    <button class="small delete"
-            onclick="deleteTask(${index})">🗑️</button>
+
+    <button
+     class="small edit"
+     onclick="openEdit(${index})">
+     ✏️
+    </button>
+
+    <button
+     class="small delete"
+     onclick="deleteTask(${index})">
+     🗑️
+    </button>
+
    </div>
 
   </div>
   `;
 
  }).join("");
+
 }
 
 function escapeHtml(value){
 
- return String(value).replace(/[&<>"]/g,function(c){
+ return String(value).replace(
+  /[&<>"]/g,
+  function(c){
 
-  return {
-   "&":"&amp;",
-   "<":"&lt;",
-   ">":"&gt;",
-   '"':"&quot;"
-  }[c];
+   return {
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;"
+   }[c];
 
- });
+  }
+ );
 
 }
 
 function toggleTask(index){
 
- tasks[index].done=!tasks[index].done;
+ tasks[index].done=
+  !tasks[index].done;
 
  save();
 }
@@ -518,73 +829,119 @@ function openAdd(){
 
  editingIndex=-1;
 
- document.getElementById("modalTitle").textContent=
+ document.getElementById("modalTitle")
+ .textContent=
   text[language].newTask;
 
- document.getElementById("saveButton").textContent=
+ document.getElementById("saveButton")
+ .textContent=
   text[language].save;
 
- document.getElementById("taskInput").value="";
+ document.getElementById("taskInput")
+ .value="";
 
- document.getElementById("priority").value="normal";
+ document.getElementById("taskDate")
+ .value="";
 
- document.getElementById("modal").style.display="flex";
+ document.getElementById("taskTime")
+ .value="";
+
+ document.getElementById("priority")
+ .value="normal";
+
+ document.getElementById("category")
+ .value="personal";
+
+ document.getElementById("modal")
+ .style.display="flex";
 
  setTimeout(()=>{
   document.getElementById("taskInput").focus();
  },100);
+
 }
 
 function openEdit(index){
 
  editingIndex=index;
 
- document.getElementById("modalTitle").textContent=
+ const task=tasks[index];
+
+ document.getElementById("modalTitle")
+ .textContent=
   text[language].editTask;
 
- document.getElementById("saveButton").textContent=
+ document.getElementById("saveButton")
+ .textContent=
   text[language].update;
 
- document.getElementById("taskInput").value=
-  tasks[index].name;
+ document.getElementById("taskInput")
+ .value=task.name;
 
- document.getElementById("priority").value=
-  tasks[index].priority || "normal";
+ document.getElementById("taskDate")
+ .value=task.date || "";
 
- document.getElementById("modal").style.display="flex";
+ document.getElementById("taskTime")
+ .value=task.time || "";
+
+ document.getElementById("priority")
+ .value=
+  task.priority || "normal";
+
+ document.getElementById("category")
+ .value=
+  task.category || "personal";
+
+ document.getElementById("modal")
+ .style.display="flex";
 }
 
 function closeModal(){
- document.getElementById("modal").style.display="none";
+
+ document.getElementById("modal")
+ .style.display="none";
 }
 
 function saveTask(){
 
- const input=document.getElementById("taskInput");
-
- const value=input.value.trim();
+ const value=
+  document.getElementById("taskInput")
+  .value.trim();
 
  if(!value)return;
 
- const priority=
-  document.getElementById("priority").value;
+ const taskData={
+
+  name:value,
+
+  done:
+   editingIndex===-1
+    ? false
+    : tasks[editingIndex].done,
+
+  priority:
+   document.getElementById("priority").value,
+
+  category:
+   document.getElementById("category").value,
+
+  date:
+   document.getElementById("taskDate").value,
+
+  time:
+   document.getElementById("taskTime").value
+
+ };
 
  if(editingIndex===-1){
 
-  tasks.unshift({
-   name:value,
-   done:false,
-   priority:priority
-  });
+  tasks.unshift(taskData);
 
  }else{
 
-  tasks[editingIndex].name=value;
-  tasks[editingIndex].priority=priority;
+  tasks[editingIndex]=taskData;
 
  }
-
- input.value="";
 
  closeModal();
 
@@ -593,7 +950,9 @@ function saveTask(){
 
 function deleteTask(index){
 
- if(!confirm(text[language].confirmDelete))return;
+ if(!confirm(
+  text[language].confirmDelete
+ ))return;
 
  tasks.splice(index,1);
 
@@ -604,111 +963,208 @@ function setLanguage(lang){
 
  language=lang;
 
- localStorage.setItem("taskora_language",lang);
+ localStorage.setItem(
+  "taskora_language",
+  lang
+ );
 
  document.documentElement.lang=lang;
 
  document.documentElement.dir=
-  lang==="ar"?"rtl":"ltr";
+  lang==="ar" ? "rtl" : "ltr";
 
- document.getElementById("subtitle").textContent=
-  text[lang].subtitle;
+ document.getElementById("subtitle")
+ .textContent=text[lang].subtitle;
 
- document.getElementById("totalText").textContent=
-  text[lang].total;
+ document.getElementById("totalText")
+ .textContent=text[lang].total;
 
- document.getElementById("completedText").textContent=
-  text[lang].completed;
+ document.getElementById("completedText")
+ .textContent=text[lang].completed;
 
- document.getElementById("remainingText").textContent=
-  text[lang].remaining;
+ document.getElementById("remainingText")
+ .textContent=text[lang].remaining;
 
- document.getElementById("search").placeholder=
-  text[lang].search;
+ document.getElementById("urgentText")
+ .textContent=text[lang].urgent;
 
- document.getElementById("addButton").textContent=
-  text[lang].add;
+ document.getElementById("progressText")
+ .textContent=text[lang].progress;
 
- document.getElementById("modalTitle").textContent=
-  editingIndex===-1
-   ? text[lang].newTask
-   : text[lang].editTask;
+ document.getElementById("search")
+ .placeholder=text[lang].search;
 
- document.getElementById("taskInput").placeholder=
-  text[lang].placeholder;
+ document.getElementById("addButton")
+ .textContent=text[lang].add;
 
- document.getElementById("saveButton").textContent=
+ document.getElementById("taskInput")
+ .placeholder=text[lang].placeholder;
+
+ document.getElementById("saveButton")
+ .textContent=
   editingIndex===-1
    ? text[lang].save
    : text[lang].update;
 
- document.getElementById("settingsTitle").textContent=
-  text[lang].settings;
+ document.getElementById("cancelButton")
+ .textContent=text[lang].cancel;
 
- document.getElementById("darkText").textContent=
-  text[lang].dark;
+ document.getElementById("settingsTitle")
+ .textContent=text[lang].settings;
 
- document.getElementById("darkDesc").textContent=
-  text[lang].darkDesc;
+ document.getElementById("darkText")
+ .textContent=text[lang].dark;
 
- document.getElementById("darkButton").textContent=
+ document.getElementById("darkDesc")
+ .textContent=text[lang].darkDesc;
+
+ document.getElementById("darkButton")
+ .textContent=
   dark ? text[lang].off : text[lang].on;
 
- document.getElementById("clearText").textContent=
-  text[lang].clear;
+ document.getElementById("languageText")
+ .textContent=text[lang].language;
 
- document.getElementById("clearDesc").textContent=
-  text[lang].clearDesc;
+ document.getElementById("languageDesc")
+ .textContent=text[lang].languageDesc;
 
- document.getElementById("clearButton").textContent=
-  text[lang].delete;
+ document.getElementById("dataText")
+ .textContent=text[lang].data;
 
- document.getElementById("closeSettings").textContent=
-  text[lang].back;
+ document.getElementById("dataDesc")
+ .textContent=text[lang].dataDesc;
 
- const filter=document.getElementById("filter");
+ document.getElementById("clearText")
+ .textContent=text[lang].clear;
 
- filter.options[0].text=text[lang].all;
- filter.options[1].text=text[lang].active;
- filter.options[2].text=text[lang].done;
+ document.getElementById("clearDesc")
+ .textContent=text[lang].clearDesc;
+
+ document.getElementById("clearButton")
+ .textContent=text[lang].delete;
+
+ document.getElementById("closeSettings")
+ .textContent=text[lang].back;
+
+ const filter=
+  document.getElementById("filter");
+
+ filter.options[0].text=
+  text[lang].all;
+
+ filter.options[1].text=
+  text[lang].active;
+
+ filter.options[2].text=
+  text[lang].done;
+
+ filter.options[3].text=
+  text[lang].urgentFilter;
+
+ const category=
+  document.getElementById("categoryFilter");
+
+ category.options[0].text=
+  text[lang].categories;
+
+ category.options[1].text=
+  text[lang].personal;
+
+ category.options[2].text=
+  text[lang].work;
+
+ category.options[3].text=
+  text[lang].study;
+
+ category.options[4].text=
+  text[lang].other;
+
+ const categoryInput=
+  document.getElementById("category");
+
+ categoryInput.options[0].text=
+  text[lang].personal;
+
+ categoryInput.options[1].text=
+  text[lang].work;
+
+ categoryInput.options[2].text=
+  text[lang].study;
+
+ categoryInput.options[3].text=
+  text[lang].other;
+
+ const priority=
+  document.getElementById("priority");
+
+ priority.options[0].text=
+  text[lang].normal;
+
+ priority.options[1].text=
+  text[lang].high;
+
+ priority.options[2].text=
+  text[lang].urgentPriority;
+
+ document.getElementById("modalTitle")
+ .textContent=
+  editingIndex===-1
+   ? text[lang].newTask
+   : text[lang].editTask;
 
  render();
 }
 
 function openSettings(){
- document.getElementById("settings").style.display="block";
+
+ document.getElementById("settings")
+ .style.display="block";
 }
 
 function closeSettings(){
- document.getElementById("settings").style.display="none";
+
+ document.getElementById("settings")
+ .style.display="none";
 }
 
 function toggleDark(){
 
  dark=!dark;
 
- localStorage.setItem("taskora_dark",dark?"1":"0");
+ localStorage.setItem(
+  "taskora_dark",
+  dark ? "1" : "0"
+ );
 
- document.body.classList.toggle("dark",dark);
+ document.body.classList.toggle(
+  "dark",
+  dark
+ );
 
  setLanguage(language);
 }
 
 function clearTasks(){
 
- if(!confirm(text[language].confirm))return;
+ if(!confirm(
+  text[language].confirm
+ ))return;
 
  tasks=[];
 
  save();
 }
 
-document.getElementById("search").addEventListener(
- "input",render
+document.getElementById("search")
+.addEventListener(
+ "input",
+ render
 );
 
-document.getElementById("modal").addEventListener(
- "click",function(e){
+document.getElementById("modal")
+.addEventListener(
+ "click",
+ function(e){
 
   if(e.target===this)
    closeModal();
@@ -716,7 +1172,10 @@ document.getElementById("modal").addEventListener(
  }
 );
 
-document.body.classList.toggle("dark",dark);
+document.body.classList.toggle(
+ "dark",
+ dark
+);
 
 setLanguage(language);
 
