@@ -2,88 +2,224 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Taskora</title>
 
 <style>
 *{box-sizing:border-box}
+:root{
+ --primary:#6757e8;
+ --primary2:#8b5cf6;
+ --bg:#f4f6fb;
+ --card:#fff;
+ --text:#111827;
+ --muted:#667085;
+ --border:#e7eaf0;
+ --danger:#ef4444;
+ --success:#16a34a;
+}
+*{transition:background-color .2s,color .2s,border-color .2s}
 body{
  margin:0;
- font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
- background:#f4f6fb;
- color:#111827;
+ font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+ background:var(--bg);
+ color:var(--text);
 }
-.app{max-width:760px;margin:auto;padding:20px 16px 100px}
-.header{padding:20px 4px}
-.logo{font-size:30px;font-weight:900}
-.subtitle{color:#667085;margin-top:6px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+body.dark{
+ --bg:#0b1020;
+ --card:#151b2d;
+ --text:#f8fafc;
+ --muted:#9ca3af;
+ --border:#293247;
+}
+.app{max-width:760px;margin:auto;padding:18px 16px 100px}
+.header{
+ padding:18px 4px 22px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+}
+.logo{
+ font-size:32px;
+ font-weight:900;
+ background:linear-gradient(135deg,var(--primary),var(--primary2));
+ -webkit-background-clip:text;
+ color:transparent;
+}
+.subtitle{color:var(--muted);margin-top:5px}
+.iconbtn{
+ width:46px;height:46px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:15px;
+ font-size:20px;
+}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+ margin-bottom:18px;
+}
 .card{
- background:white;
- border:1px solid #e7eaf0;
+ background:var(--card);
+ border:1px solid var(--border);
  border-radius:20px;
  padding:16px;
  box-shadow:0 8px 25px rgba(16,24,40,.06);
 }
 .stat b{font-size:25px}
-.stat span{display:block;color:#667085;font-size:12px;margin-top:4px}
-.toolbar{display:flex;gap:9px;margin-bottom:15px}
-input{
- flex:1;
+.stat span{
+ display:block;
+ color:var(--muted);
+ font-size:12px;
+ margin-top:4px;
+}
+.toolbar{
+ display:flex;
+ gap:9px;
+ margin-bottom:15px;
+}
+input,select{
+ width:100%;
  padding:14px;
- border:1px solid #dfe3ea;
+ border:1px solid var(--border);
  border-radius:14px;
  font-size:15px;
  outline:none;
+ background:var(--card);
+ color:var(--text);
 }
+.toolbar input{flex:1}
 button{
  border:0;
  border-radius:14px;
  padding:13px 17px;
- background:#6757e8;
+ background:var(--primary);
  color:white;
  font-weight:800;
+ cursor:pointer;
 }
 .tasks{display:grid;gap:10px}
-.task{display:flex;align-items:center;gap:12px}
+.task{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ cursor:pointer;
+}
 .check{
- width:23px;height:23px;
+ width:24px;height:24px;
  border:2px solid #c8ced8;
- border-radius:7px;
+ border-radius:8px;
  flex:none;
 }
-.done .check{background:#16b8a6;border-color:#16b8a6}
-.done .name{text-decoration:line-through;color:#98a2b3}
+.done .check{
+ background:var(--success);
+ border-color:var(--success);
+}
+.done .name{
+ text-decoration:line-through;
+ color:var(--muted);
+}
 .name{font-weight:750}
-.meta{font-size:12px;color:#667085;margin-top:4px}
+.meta{
+ font-size:12px;
+ color:var(--muted);
+ margin-top:4px;
+}
+.task-actions{
+ margin-right:auto;
+ display:flex;
+ gap:5px;
+}
+.small{
+ padding:8px 10px;
+ border-radius:10px;
+ font-size:12px;
+}
+.delete{background:var(--danger)}
+.edit{background:#475569}
 .bottom{
  position:fixed;
- bottom:14px;
+ bottom:12px;
  left:50%;
  transform:translateX(-50%);
  background:#111827;
- padding:8px;
+ padding:7px;
  border-radius:20px;
  display:flex;
  gap:4px;
+ z-index:20;
+ box-shadow:0 8px 30px rgba(0,0,0,.2);
 }
-.bottom button{background:transparent;padding:9px 13px}
+.bottom button{
+ background:transparent;
+ padding:9px 12px;
+}
 .modal{
  position:fixed;
  inset:0;
- background:rgba(0,0,0,.45);
+ background:rgba(0,0,0,.5);
  display:none;
  align-items:flex-end;
+ z-index:50;
 }
 .sheet{
- background:white;
+ background:var(--card);
+ color:var(--text);
  width:100%;
  max-width:760px;
  margin:auto;
  border-radius:25px 25px 0 0;
  padding:22px;
 }
-.sheet input{width:100%;margin:10px 0}
+.sheet input,.sheet select{margin:8px 0}
+.sheet-actions{
+ display:flex;
+ gap:8px;
+ margin-top:10px;
+}
+.sheet-actions button{flex:1}
+.cancel{background:#64748b}
+.settings{
+ position:fixed;
+ inset:0;
+ background:var(--bg);
+ z-index:40;
+ display:none;
+ overflow:auto;
+}
+.settings-inner{
+ max-width:760px;
+ margin:auto;
+ padding:20px 16px 100px;
+}
+.setting-row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+ padding:16px 0;
+ border-bottom:1px solid var(--border);
+}
+.setting-row span{color:var(--muted);font-size:13px}
+.close{
+ background:#475569;
+ margin-bottom:15px;
+}
+.empty{
+ text-align:center;
+ color:var(--muted);
+ padding:30px;
+}
+@media(max-width:420px){
+ .logo{font-size:28px}
+ .stats{gap:7px}
+ .card{padding:13px}
+ .toolbar{flex-direction:column}
+ .toolbar button{width:100%}
+}
 </style>
 </head>
 
@@ -91,36 +227,43 @@ button{
 
 <div class="app">
 
- <div class="header">
-   <div class="logo">Taskora</div>
-   <div class="subtitle" id="subtitle">
-     نظّم يومك، أنجز أكثر.
-   </div>
+<header class="header">
+ <div>
+  <div class="logo">Taskora</div>
+  <div class="subtitle" id="subtitle">نظّم يومك، أنجز أكثر.</div>
  </div>
+ <button class="iconbtn" onclick="openSettings()">⚙️</button>
+</header>
 
- <div class="stats">
-   <div class="card stat">
-     <b id="total">0</b>
-     <span id="totalText">الإجمالي</span>
-   </div>
-
-   <div class="card stat">
-     <b id="completed">0</b>
-     <span id="completedText">المكتملة</span>
-   </div>
-
-   <div class="card stat">
-     <b id="remaining">0</b>
-     <span id="remainingText">المتبقية</span>
-   </div>
+<section class="stats">
+ <div class="card stat">
+  <b id="total">0</b>
+  <span id="totalText">الإجمالي</span>
  </div>
-
- <div class="toolbar">
-   <input id="search" placeholder="ابحث عن مهمة...">
-   <button onclick="openAdd()">+ إضافة</button>
+ <div class="card stat">
+  <b id="completed">0</b>
+  <span id="completedText">المكتملة</span>
  </div>
+ <div class="card stat">
+  <b id="remaining">0</b>
+  <span id="remainingText">المتبقية</span>
+ </div>
+</section>
 
- <div class="tasks" id="tasks"></div>
+<div class="toolbar">
+ <input id="search" placeholder="ابحث عن مهمة...">
+ <button onclick="openAdd()" id="addButton">+ إضافة</button>
+</div>
+
+<div class="toolbar">
+ <select id="filter" onchange="render()">
+  <option value="all">كل المهام</option>
+  <option value="active">قيد التنفيذ</option>
+  <option value="done">المكتملة</option>
+ </select>
+</div>
+
+<div class="tasks" id="tasks"></div>
 
 </div>
 
@@ -131,9 +274,59 @@ button{
 
 <div class="modal" id="modal">
  <div class="sheet">
-   <h2 id="modalTitle">مهمة جديدة</h2>
-   <input id="taskInput" placeholder="اكتب المهمة هنا">
-   <button onclick="addTask()" id="saveButton">حفظ المهمة</button>
+  <h2 id="modalTitle">مهمة جديدة</h2>
+
+  <input id="taskInput" placeholder="اكتب المهمة هنا">
+
+  <select id="priority">
+   <option value="normal">عادية</option>
+   <option value="high">مهمة</option>
+   <option value="urgent">عاجلة</option>
+  </select>
+
+  <div class="sheet-actions">
+   <button onclick="saveTask()" id="saveButton">حفظ المهمة</button>
+   <button onclick="closeModal()" class="cancel">إلغاء</button>
+  </div>
+ </div>
+</div>
+
+<div class="settings" id="settings">
+ <div class="settings-inner">
+
+  <button class="close" onclick="closeSettings()" id="closeSettings">
+   رجوع
+  </button>
+
+  <div class="card">
+   <h2 id="settingsTitle">الإعدادات</h2>
+
+   <div class="setting-row">
+    <div>
+     <b id="darkText">الوضع الليلي</b><br>
+     <span id="darkDesc">تغيير مظهر التطبيق</span>
+    </div>
+    <button onclick="toggleDark()" id="darkButton">تشغيل</button>
+   </div>
+
+   <div class="setting-row">
+    <div>
+     <b id="clearText">حذف جميع المهام</b><br>
+     <span id="clearDesc">حذف البيانات المحفوظة</span>
+    </div>
+    <button onclick="clearTasks()" class="delete" id="clearButton">
+     حذف
+    </button>
+   </div>
+
+   <div class="setting-row">
+    <div>
+     <b>Taskora</b><br>
+     <span>Version 1.0</span>
+    </div>
+   </div>
+
+  </div>
  </div>
 </div>
 
@@ -145,6 +338,11 @@ let tasks =
 let language =
  localStorage.getItem("taskora_language") || "ar";
 
+let dark =
+ localStorage.getItem("taskora_dark") === "1";
+
+let editingIndex = -1;
+
 const text = {
 
  ar:{
@@ -155,11 +353,30 @@ const text = {
   search:"ابحث عن مهمة...",
   add:"+ إضافة",
   newTask:"مهمة جديدة",
+  editTask:"تعديل المهمة",
   placeholder:"اكتب المهمة هنا",
   save:"حفظ المهمة",
+  update:"تحديث المهمة",
   empty:"لا توجد مهام حتى الآن.",
   completedStatus:"مكتملة",
-  activeStatus:"قيد التنفيذ"
+  activeStatus:"قيد التنفيذ",
+  all:"كل المهام",
+  active:"قيد التنفيذ",
+  done:"المكتملة",
+  normal:"عادية",
+  high:"مهمة",
+  urgent:"عاجلة",
+  settings:"الإعدادات",
+  dark:"الوضع الليلي",
+  darkDesc:"تغيير مظهر التطبيق",
+  on:"تشغيل",
+  off:"إيقاف",
+  clear:"حذف جميع المهام",
+  clearDesc:"حذف البيانات المحفوظة",
+  delete:"حذف",
+  back:"رجوع",
+  confirm:"هل تريد حذف جميع المهام؟",
+  confirmDelete:"هل تريد حذف هذه المهمة؟"
  },
 
  en:{
@@ -170,11 +387,30 @@ const text = {
   search:"Search tasks...",
   add:"+ Add",
   newTask:"New task",
+  editTask:"Edit task",
   placeholder:"Write your task",
   save:"Save task",
+  update:"Update task",
   empty:"No tasks yet.",
   completedStatus:"Completed",
-  activeStatus:"In progress"
+  activeStatus:"In progress",
+  all:"All tasks",
+  active:"In progress",
+  done:"Completed",
+  normal:"Normal",
+  high:"Important",
+  urgent:"Urgent",
+  settings:"Settings",
+  dark:"Dark mode",
+  darkDesc:"Change application appearance",
+  on:"ON",
+  off:"OFF",
+  clear:"Delete all tasks",
+  clearDesc:"Delete saved data",
+  delete:"Delete",
+  back:"Back",
+  confirm:"Delete all tasks?",
+  confirmDelete:"Delete this task?"
  }
 
 };
@@ -189,27 +425,35 @@ function render(){
  const query =
  document.getElementById("search").value.toLowerCase();
 
- const filtered =
- tasks.filter(t =>
- t.name.toLowerCase().includes(query)
- );
+ const filter =
+ document.getElementById("filter").value;
 
- document.getElementById("total").textContent =
- tasks.length;
+ let filtered=tasks.filter(t=>{
 
- document.getElementById("completed").textContent =
+  const matchSearch =
+   t.name.toLowerCase().includes(query);
+
+  const matchFilter =
+   filter==="all" ||
+   (filter==="done" && t.done) ||
+   (filter==="active" && !t.done);
+
+  return matchSearch && matchFilter;
+ });
+
+ document.getElementById("total").textContent=tasks.length;
+
+ document.getElementById("completed").textContent=
  tasks.filter(t=>t.done).length;
 
- document.getElementById("remaining").textContent =
+ document.getElementById("remaining").textContent=
  tasks.filter(t=>!t.done).length;
 
  const box=document.getElementById("tasks");
 
  if(filtered.length===0){
-  box.innerHTML =
-  `<div class="card" style="text-align:center;color:#667085">
-  ${text[language].empty}
-  </div>`;
+  box.innerHTML=
+   `<div class="card empty">${text[language].empty}</div>`;
   return;
  }
 
@@ -217,20 +461,29 @@ function render(){
 
   const index=tasks.indexOf(task);
 
+  let priorityText=text[language][task.priority||"normal"];
+
   return `
-  <div class="card task ${task.done?'done':''}"
-       onclick="toggleTask(${index})">
+  <div class="card task ${task.done?'done':''}">
 
-   <div class="check"></div>
+   <div class="check"
+        onclick="toggleTask(${index})"></div>
 
-   <div>
+   <div style="flex:1" onclick="toggleTask(${index})">
     <div class="name">${escapeHtml(task.name)}</div>
-
     <div class="meta">
      ${task.done
-       ? text[language].completedStatus
-       : text[language].activeStatus}
+      ? text[language].completedStatus
+      : text[language].activeStatus}
+     · ${priorityText}
     </div>
+   </div>
+
+   <div class="task-actions">
+    <button class="small edit"
+            onclick="openEdit(${index})">✏️</button>
+    <button class="small delete"
+            onclick="deleteTask(${index})">🗑️</button>
    </div>
 
   </div>
@@ -241,7 +494,7 @@ function render(){
 
 function escapeHtml(value){
 
- return value.replace(/[&<>"]/g,function(c){
+ return String(value).replace(/[&<>"]/g,function(c){
 
   return {
    "&":"&amp;",
@@ -263,12 +516,49 @@ function toggleTask(index){
 
 function openAdd(){
 
+ editingIndex=-1;
+
+ document.getElementById("modalTitle").textContent=
+  text[language].newTask;
+
+ document.getElementById("saveButton").textContent=
+  text[language].save;
+
+ document.getElementById("taskInput").value="";
+
+ document.getElementById("priority").value="normal";
+
  document.getElementById("modal").style.display="flex";
 
- document.getElementById("taskInput").focus();
+ setTimeout(()=>{
+  document.getElementById("taskInput").focus();
+ },100);
 }
 
-function addTask(){
+function openEdit(index){
+
+ editingIndex=index;
+
+ document.getElementById("modalTitle").textContent=
+  text[language].editTask;
+
+ document.getElementById("saveButton").textContent=
+  text[language].update;
+
+ document.getElementById("taskInput").value=
+  tasks[index].name;
+
+ document.getElementById("priority").value=
+  tasks[index].priority || "normal";
+
+ document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+ document.getElementById("modal").style.display="none";
+}
+
+function saveTask(){
 
  const input=document.getElementById("taskInput");
 
@@ -276,14 +566,36 @@ function addTask(){
 
  if(!value)return;
 
- tasks.unshift({
-  name:value,
-  done:false
- });
+ const priority=
+  document.getElementById("priority").value;
+
+ if(editingIndex===-1){
+
+  tasks.unshift({
+   name:value,
+   done:false,
+   priority:priority
+  });
+
+ }else{
+
+  tasks[editingIndex].name=value;
+  tasks[editingIndex].priority=priority;
+
+ }
 
  input.value="";
 
- document.getElementById("modal").style.display="none";
+ closeModal();
+
+ save();
+}
+
+function deleteTask(index){
+
+ if(!confirm(text[language].confirmDelete))return;
+
+ tasks.splice(index,1);
 
  save();
 }
@@ -297,36 +609,98 @@ function setLanguage(lang){
  document.documentElement.lang=lang;
 
  document.documentElement.dir=
- lang==="ar"?"rtl":"ltr";
+  lang==="ar"?"rtl":"ltr";
 
  document.getElementById("subtitle").textContent=
- text[lang].subtitle;
+  text[lang].subtitle;
 
  document.getElementById("totalText").textContent=
- text[lang].total;
+  text[lang].total;
 
  document.getElementById("completedText").textContent=
- text[lang].completed;
+  text[lang].completed;
 
  document.getElementById("remainingText").textContent=
- text[lang].remaining;
+  text[lang].remaining;
 
  document.getElementById("search").placeholder=
- text[lang].search;
+  text[lang].search;
 
- document.querySelector(".toolbar button").textContent=
- text[lang].add;
+ document.getElementById("addButton").textContent=
+  text[lang].add;
 
  document.getElementById("modalTitle").textContent=
- text[lang].newTask;
+  editingIndex===-1
+   ? text[lang].newTask
+   : text[lang].editTask;
 
  document.getElementById("taskInput").placeholder=
- text[lang].placeholder;
+  text[lang].placeholder;
 
  document.getElementById("saveButton").textContent=
- text[lang].save;
+  editingIndex===-1
+   ? text[lang].save
+   : text[lang].update;
+
+ document.getElementById("settingsTitle").textContent=
+  text[lang].settings;
+
+ document.getElementById("darkText").textContent=
+  text[lang].dark;
+
+ document.getElementById("darkDesc").textContent=
+  text[lang].darkDesc;
+
+ document.getElementById("darkButton").textContent=
+  dark ? text[lang].off : text[lang].on;
+
+ document.getElementById("clearText").textContent=
+  text[lang].clear;
+
+ document.getElementById("clearDesc").textContent=
+  text[lang].clearDesc;
+
+ document.getElementById("clearButton").textContent=
+  text[lang].delete;
+
+ document.getElementById("closeSettings").textContent=
+  text[lang].back;
+
+ const filter=document.getElementById("filter");
+
+ filter.options[0].text=text[lang].all;
+ filter.options[1].text=text[lang].active;
+ filter.options[2].text=text[lang].done;
 
  render();
+}
+
+function openSettings(){
+ document.getElementById("settings").style.display="block";
+}
+
+function closeSettings(){
+ document.getElementById("settings").style.display="none";
+}
+
+function toggleDark(){
+
+ dark=!dark;
+
+ localStorage.setItem("taskora_dark",dark?"1":"0");
+
+ document.body.classList.toggle("dark",dark);
+
+ setLanguage(language);
+}
+
+function clearTasks(){
+
+ if(!confirm(text[language].confirm))return;
+
+ tasks=[];
+
+ save();
 }
 
 document.getElementById("search").addEventListener(
@@ -337,10 +711,12 @@ document.getElementById("modal").addEventListener(
  "click",function(e){
 
   if(e.target===this)
-   this.style.display="none";
+   closeModal();
 
  }
 );
+
+document.body.classList.toggle("dark",dark);
 
 setLanguage(language);
 
